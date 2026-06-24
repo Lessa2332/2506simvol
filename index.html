@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<title>🔴 Червона Станція — Олімпійські Символи</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--red:#EE334E;--crimson:#c0001a;--dark:#1a0005;--panel:#200008;--white:#fff;--yellow:#FFD700;--green:#00e676;--blue:#2196F3;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{width:100%;height:100%;font-family:'Nunito',sans-serif;background:linear-gradient(160deg,var(--dark),#2d000d);color:var(--white);overflow:hidden;}
+
+/* FIRE PARTICLES */
+.fire-bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.spark{position:absolute;border-radius:50%;animation:rise var(--d,4s) ease-in infinite;bottom:0;}
+@keyframes rise{0%{transform:translateY(0) scale(1);opacity:.7;}100%{transform:translateY(-100vh) scale(.3);opacity:0;}}
+
+/* TOP BAR */
+.top-bar{position:fixed;top:env(safe-area-inset-top,0);left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:clamp(8px,1.5vw,14px) clamp(14px,3vw,28px);background:rgba(0,0,0,.65);backdrop-filter:blur(14px);border-bottom:1.5px solid rgba(238,51,78,.25);}
+.tb-logo{color:var(--red);font-weight:900;font-size:clamp(.85rem,2.2vw,1.3rem);}
+.tb-score{color:var(--yellow);font-weight:900;font-size:clamp(.9rem,2vw,1.2rem);}
+
+/* SCREENS */
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:clamp(56px,9vh,82px);padding-bottom:clamp(12px,3vh,24px);padding-inline:clamp(12px,2.5vw,24px);overflow-y:auto;opacity:0;pointer-events:none;transition:opacity .4s;z-index:1;}
+.screen.active{opacity:1;pointer-events:all;}
+
+/* WELCOME */
+#sw{justify-content:center;}
+.torch-big{font-size:clamp(4rem,14vw,9rem);animation:flame 1.2s ease-in-out infinite alternate;display:block;text-align:center;}
+@keyframes flame{from{transform:scale(1) rotate(-3deg);}to{transform:scale(1.1) rotate(3deg);}}
+.w-title{font-size:clamp(1.8rem,6.5vw,4.5rem);font-weight:900;text-align:center;color:var(--red);text-shadow:0 0 30px rgba(238,51,78,.6);margin:.15em 0;}
+.w-sub{font-size:clamp(.95rem,2.5vw,1.5rem);text-align:center;color:rgba(255,255,255,.75);margin-bottom:1.5em;max-width:520px;}
+.badge{display:inline-flex;align-items:center;gap:.4em;background:rgba(238,51,78,.12);border:1.5px solid rgba(238,51,78,.35);border-radius:40px;padding:.35em 1.2em;color:var(--red);font-size:clamp(.8rem,1.8vw,1.05rem);margin-bottom:2em;}
+.btn-main{background:linear-gradient(135deg,var(--red),var(--crimson));color:#fff;font-family:inherit;font-weight:900;font-size:clamp(1.1rem,3.5vw,1.8rem);border:none;border-radius:50px;padding:.6em 2.5em;cursor:pointer;box-shadow:0 8px 32px rgba(238,51,78,.5);transition:transform .15s;touch-action:manipulation;}
+.btn-main:active{transform:scale(.95);}
+
+/* SYMBOLS GALLERY */
+#ss h2{font-size:clamp(1.3rem,4vw,2.5rem);font-weight:900;text-align:center;color:var(--red);margin-bottom:clamp(10px,2vw,20px);}
+.sym-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(155px,42vw),1fr));gap:clamp(10px,2vw,16px);width:100%;max-width:700px;}
+.sym-card{background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);border-radius:18px;padding:clamp(14px,2.5vw,24px);text-align:center;cursor:pointer;transition:all .25s;touch-action:manipulation;}
+.sym-card:hover,.sym-card:active{background:rgba(238,51,78,.18);border-color:var(--red);transform:scale(1.04);}
+.sym-icon{font-size:clamp(2.5rem,8vw,4rem);display:block;margin-bottom:.3em;}
+.sym-name{font-weight:900;font-size:clamp(.85rem,2vw,1.15rem);color:var(--white);margin-bottom:.2em;}
+.sym-short{font-size:clamp(.65rem,1.4vw,.85rem);color:rgba(255,255,255,.45);line-height:1.4;}
+
+/* SYMBOL DETAIL MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:flex;align-items:center;justify-content:center;padding:clamp(12px,3vw,24px);opacity:0;pointer-events:none;transition:opacity .3s;}
+.modal-ov.open{opacity:1;pointer-events:all;}
+.modal{background:#1a0005;border:1.5px solid rgba(238,51,78,.3);border-radius:24px;width:100%;max-width:500px;max-height:80vh;overflow-y:auto;padding:clamp(16px,3vw,32px);}
+.modal-icon{font-size:clamp(3.5rem,10vw,6rem);text-align:center;display:block;margin-bottom:.3em;}
+.modal-name{font-size:clamp(1.4rem,4vw,2.2rem);font-weight:900;color:var(--red);margin-bottom:.5em;}
+.modal-body{font-size:clamp(.85rem,1.8vw,1.05rem);color:rgba(255,255,255,.8);line-height:1.65;}
+.modal-close{float:right;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);color:#fff;border-radius:50%;width:34px;height:34px;font-size:1rem;cursor:pointer;margin-top:-4px;}
+.fact-tag{display:inline-block;background:rgba(238,51,78,.2);border:1px solid rgba(238,51,78,.4);border-radius:20px;padding:.15em .7em;font-size:clamp(.7rem,1.4vw,.88rem);color:var(--red);margin-bottom:.6em;}
+
+/* QUIZ */
+#sq{flex-direction:column;}
+.q-prog{color:rgba(255,255,255,.4);font-size:clamp(.75rem,1.5vw,.9rem);text-align:center;margin-bottom:.4em;}
+.q-box{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:22px;padding:clamp(14px,3vw,28px);width:100%;max-width:600px;margin-bottom:clamp(10px,2vw,18px);}
+.q-category{font-size:clamp(.7rem,1.4vw,.88rem);color:var(--red);font-weight:700;margin-bottom:.4em;}
+.q-text{font-size:clamp(1rem,2.7vw,1.6rem);font-weight:700;line-height:1.45;color:var(--white);}
+.q-img{font-size:clamp(2rem,6vw,3.5rem);margin-bottom:.3em;display:block;text-align:center;}
+.opts{display:flex;flex-direction:column;gap:clamp(8px,1.5vw,12px);width:100%;max-width:600px;}
+.opt{background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.15);border-radius:14px;padding:clamp(10px,2vw,16px) clamp(14px,2.5vw,22px);color:#fff;font-size:clamp(.9rem,2.2vw,1.2rem);font-family:inherit;font-weight:700;cursor:pointer;transition:all .2s;text-align:left;touch-action:manipulation;}
+.opt:hover{background:rgba(255,255,255,.16);}
+.opt.correct{background:rgba(0,230,118,.2);border-color:var(--green);color:var(--green);}
+.opt.wrong{background:rgba(238,51,78,.2);border-color:var(--red);color:var(--red);}
+.opt:disabled{cursor:default;}
+.q-fb{text-align:center;min-height:2.5em;font-size:clamp(.95rem,2.5vw,1.3rem);font-weight:900;margin-top:.5em;width:100%;max-width:600px;}
+.q-fb.ok{color:var(--green);}
+.q-fb.no{color:var(--red);}
+.q-explain{background:rgba(255,255,255,.05);border-left:4px solid var(--red);border-radius:0 12px 12px 0;padding:clamp(8px,1.5vw,14px) clamp(10px,2vw,18px);font-size:clamp(.8rem,1.8vw,1rem);color:rgba(255,255,255,.7);line-height:1.5;width:100%;max-width:600px;margin-top:.5em;display:none;}
+.next-btn{background:linear-gradient(135deg,var(--red),var(--crimson));color:#fff;font-family:inherit;font-weight:900;font-size:clamp(1rem,2.5vw,1.3rem);border:none;border-radius:40px;padding:.5em 2em;cursor:pointer;touch-action:manipulation;display:none;margin-top:clamp(8px,1.5vw,14px);}
+
+/* FINISH */
+#sf{justify-content:center;}
+.fin-flame{font-size:clamp(4rem,13vw,8rem);display:block;text-align:center;animation:flm 1s ease-in-out infinite alternate;}
+@keyframes flm{from{transform:scale(1)rotate(-3deg);}to{transform:scale(1.1)rotate(3deg);}}
+.fin-title{font-size:clamp(1.8rem,5.5vw,3.5rem);font-weight:900;color:var(--red);text-align:center;margin:.2em 0;}
+.fin-sub{font-size:clamp(.95rem,2.3vw,1.4rem);color:rgba(255,255,255,.75);text-align:center;margin-bottom:1em;max-width:480px;}
+.score-ring{width:clamp(100px,18vw,140px);height:clamp(100px,18vw,140px);border-radius:50%;border:5px solid var(--red);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 1.2em;box-shadow:0 0 40px rgba(238,51,78,.3);}
+.sc-big{font-size:clamp(2rem,6vw,3.5rem);font-weight:900;color:var(--red);}
+.sc-sm{font-size:clamp(.65rem,1.3vw,.85rem);color:rgba(255,255,255,.4);}
+.letter-badge{background:linear-gradient(135deg,var(--red),var(--crimson));color:#fff;font-size:clamp(3.5rem,12vw,7rem);font-weight:900;border-radius:20px;padding:.05em .45em;display:inline-block;box-shadow:0 0 50px rgba(238,51,78,.6);animation:lpulse 1.5s ease-in-out infinite alternate;margin:.4em 0;}
+@keyframes lpulse{from{box-shadow:0 0 20px rgba(238,51,78,.4);}to{box-shadow:0 0 70px rgba(238,51,78,.9);}}
+.action-row{display:flex;gap:.8em;flex-wrap:wrap;justify-content:center;margin-top:1em;}
+.btn-s{background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);color:#fff;font-family:inherit;font-weight:700;font-size:clamp(.85rem,2vw,1.1rem);border-radius:40px;padding:.45em 1.4em;cursor:pointer;touch-action:manipulation;}
+.btn-s:hover{background:rgba(255,255,255,.2);}
+</style>
+</head>
+<body>
+<div class="fire-bg" id="fire-bg"></div>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <span class="tb-logo">🔴 Червона Станція</span>
+  <span class="tb-score">🏅 <span id="tb-score">0</span></span>
+</div>
+
+<!-- WELCOME -->
+<div class="screen active" id="sw">
+  <span class="torch-big">🔥</span>
+  <h1 class="w-title">Олімпійські Символи!</h1>
+  <p class="w-sub">Дізнайся про кільця, факел, гімн та інші великі символи Олімпійських ігор!</p>
+  <div class="badge">🔴 Червоне кільце • Символіка ігор</div>
+  <button class="btn-main" onclick="goTo('ss')">🔍 Досліджуємо!</button>
+</div>
+
+<!-- SYMBOLS GALLERY -->
+<div class="screen" id="ss">
+  <h2>🏅 Олімпійські Символи</h2>
+  <div class="sym-grid" id="sym-grid"></div>
+  <button class="btn-main" onclick="goTo('sq')" style="margin-top:1.5em;font-size:clamp(.95rem,2.5vw,1.3rem);">📝 До вікторини →</button>
+</div>
+
+<!-- MODAL -->
+<div class="modal-ov" id="modal" onclick="closeModal(event)">
+  <div class="modal" id="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="screen" id="sq">
+  <div class="q-prog" id="q-prog">1 / 8</div>
+  <div class="q-box">
+    <div class="q-category" id="q-cat">🔴 Символіка</div>
+    <div class="q-img" id="q-img">🔥</div>
+    <div class="q-text" id="q-text">Завантаження…</div>
+  </div>
+  <div class="opts" id="q-opts"></div>
+  <div class="q-fb" id="q-fb"></div>
+  <div class="q-explain" id="q-explain"></div>
+  <button class="next-btn" id="next-btn" onclick="nextQ()">Далі ➜</button>
+</div>
+
+<!-- FINISH -->
+<div class="screen" id="sf">
+  <span class="fin-flame">🔥</span>
+  <div class="fin-title" id="fin-title">Чудово!</div>
+  <div class="fin-sub" id="fin-sub">Ти знаєш олімпійські символи!</div>
+  <div class="score-ring">
+    <div class="sc-big" id="fin-score">8</div>
+    <div class="sc-sm" id="fin-of">з 8</div>
+  </div>
+  <p style="color:rgba(255,255,255,.6);font-size:clamp(.85rem,1.8vw,1.05rem);margin-bottom:.3em;">Твоя літера:</p>
+  <div class="letter-badge">М</div>
+  <p style="color:rgba(255,255,255,.4);font-size:clamp(.72rem,1.4vw,.9rem);text-align:center;margin-bottom:1em;">Запиши та йди до дешифратора! 🎯</p>
+  <div class="action-row">
+    <button class="btn-s" onclick="goTo('sw')">🔄 Знову</button>
+    <button class="btn-s" onclick="goTo('ss')">📖 Символи</button>
+  </div>
+</div>
+
+<script>
+/* Fire sparks */
+(function(){
+  const c=document.getElementById('fire-bg');
+  const cols=['#EE334E','#ff7800','#FFD700','#ff4500'];
+  for(let i=0;i<25;i++){
+    const s=document.createElement('div');s.className='spark';
+    const sz=Math.random()*8+3;
+    s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;background:${cols[Math.floor(Math.random()*cols.length)]};border-radius:50%;--d:${(Math.random()*4+2).toFixed(1)}s;animation-delay:-${(Math.random()*4).toFixed(1)}s;`;
+    c.appendChild(s);
+  }
+})();
+
+/* DATA — SYMBOLS */
+const symbols=[
+  {icon:'⭕',name:'Олімпійські Кільця',short:'5 кілець — 5 континентів',
+   cat:'Герб',fact:'Придумав П\'єр де Кубертен у 1913 р.',
+   body:'П\'ять кілець символізують 5 континентів Землі: синє — Європа, чорне — Африка, червоне — Америка, жовте — Азія, зелене — Океанія. Коліри обрані не через континент, а тому що хоча б один з них є на прапорі кожної країни!'},
+  {icon:'🔥',name:'Олімпійський Вогонь',short:'Символ єдності та миру',
+   cat:'Церемонія',fact:'Запалюється в Олімпії, Греція.',
+   body:'Вогонь запалюється сонячними променями у давньому місті Олімпія і естафетою доставляється до місця проведення Ігор. Традицію відновили у 1936 році на Берлінській Олімпіаді. Естафета може тривати місяцями і охоплювати тисячі кілометрів!'},
+  {icon:'🏳️',name:'Олімпійський Прапор',short:'Білий з 5 кільцями',
+   cat:'Символ',fact:'Вперше піднятий у 1920 р. в Антверпені.',
+   body:'Білий фон символізує мир. П\'ять кілець — єдність народів. Прапор несуть на відкритті та закритті Ігор, а також передають від одного міста-господаря до наступного.'},
+  {icon:'🕊️',name:'Клятва спортсмена',short:'Fair Play і чесна боротьба',
+   cat:'Традиція',fact:'«Я клянуся змагатися чесно…»',
+   body:'На відкритті Олімпіади один спортсмен-господар від імені всіх учасників зачитує клятву чесної гри та дотримання правил. З 2020 р. також клянуться тренери та арбітри. Це символ Fair Play — чесної гри та поваги до суперника.'},
+  {icon:'🏅',name:'Олімпійські Медалі',short:'Золото, Срібло, Бронза',
+   cat:'Нагороди',fact:'Золота медаль — срібна з позолотою!',
+   body:'Золота медаль насправді зроблена зі срібла і вкрита шаром золота (не менше 6 г). Срібна — чисте срібло. Бронзова — сплав міді. Остання суто золота медаль вручалась у 1912 році у Стокгольмі.'},
+  {icon:'🎵',name:'Олімпійський Гімн',short:'«Безсмертний дух» Самари',
+   cat:'Музика',fact:'Грецький гімн, написаний у 1896 р.',
+   body:'Олімпійський гімн написаний Спіросом Самарасом на слова Костіса Паламаса і вперше прозвучав на перших сучасних Олімпійських іграх 1896 року в Афінах. Він виконується на відкритті кожної Олімпіади під час підняття прапора МОК.'},
+  {icon:'🕊️',name:'Голуби миру',short:'Символ олімпійського миру',
+   cat:'Традиція',fact:'Традиція починалася з живих голубів.',
+   body:'На відкритті Ігор раніше випускали голубів як символ миру. Після трагічного інциденту 1988 року, коли голуби сіли на факел, традицію замінили: тепер голубів імітують артисти, повітряні кулі або спецефекти.'},
+  {icon:'🏛️',name:'МОК — Міжнародний Олімпійський Комітет',short:'Керівний орган Олімпіади',
+   cat:'Організація',fact:'Заснований у 1894 р. у Парижі.',
+   body:'МОК — незалежна міжнародна організація, яка керує Олімпійським рухом. Заснована П\'єром де Кубертеном 23 червня 1894 р. Саме тому 23 червня відзначається як Міжнародний Олімпійський День!'},
+];
+
+/* QUIZ QUESTIONS */
+const questions=[
+  {cat:'⭕ Кільця',img:'⭕',q:'Скільки кілець на Олімпійському прапорі?',opts:['3','4','5','6'],a:2,exp:'П\'ять кілець символізують 5 континентів. Синє — Європа, Чорне — Африка, Червоне — Америка, Жовте — Азія, Зелене — Океанія!'},
+  {cat:'🔥 Вогонь',img:'🔥',q:'Де запалюють Олімпійський вогонь перед кожними Іграми?',opts:['Афіни, Греція','Рим, Італія','Олімпія, Греція','Нью-Йорк, США'],a:2,exp:'Вогонь завжди запалюється в стародавньому місті Олімпія за допомогою сонячного дзеркала. Саме звідти розпочинається естафета вогню!'},
+  {cat:'🏅 Медалі',img:'🥇',q:'З чого насправді зроблена золота олімпійська медаль?',opts:['Чисте золото','Срібло з позолотою','Позолочена бронза','Титан з покриттям'],a:1,exp:'Золота медаль — це срібло, вкрите шаром золота щонайменше 6 грамів! Чисто золоті медалі вручали востаннє у 1912 році.'},
+  {cat:'🏳️ Прапор',img:'🏳️',q:'Що символізує білий фон Олімпійського прапора?',opts:['Сніг і зиму','Мир між народами','Чистоту спорту','Нейтральну країну'],a:1,exp:'Білий фон символізує мир. Разом з п\'ятьма кільцями різних кольорів — мир між об\'єднаними народами всіх континентів.'},
+  {cat:'📅 Дати',img:'📅',q:'Коли відзначають Міжнародний Олімпійський День?',opts:['1 травня','15 серпня','23 червня','31 грудня'],a:2,exp:'23 червня! Саме в цей день у 1894 році П\'єр де Кубертен заснував МОК — Міжнародний Олімпійський Комітет у Парижі.'},
+  {cat:'🕊️ Цінності',img:'🏆',q:'Що означає принцип Fair Play?',opts:['Перемога будь-якою ціною','Чесна гра та повага до суперника','Право на реванш','Підтримка свого судді'],a:1,exp:'Fair Play — одна з головних олімпійських цінностей. Це чесна гра, повага до суперника, суддів і правил. Іноді Fair Play цінується більше за медаль!'},
+  {cat:'🎵 Гімн',img:'🎵',q:'Коли вперше прозвучав Олімпійський гімн?',opts:['1896 р. в Афінах','1900 р. в Парижі','1920 р. в Антверпені','1936 р. у Берліні'],a:0,exp:'Олімпійський гімн вперше прозвучав на перших сучасних Іграх 1896 року в Афінах. Написав його Спірос Самарас — і він виконується досі!'},
+  {cat:'🏛️ МОК',img:'🏛️',q:'Хто заснував сучасні Олімпійські ігри?',opts:['Аристотель','П\'єр де Кубертен','Нельсон Мандела','Наполеон Бонапарт'],a:1,exp:'П\'єр де Кубертен — французький барон, який у 1894 р. заснував МОК і відродив Олімпійські ігри. Перші сучасні Ігри пройшли у 1896 р. в Афінах!'},
+];
+
+/* STATE */
+let cur='sw',score=0,qIdx=0;
+
+function goTo(id){
+  document.getElementById(cur).classList.remove('active');
+  document.getElementById(id).classList.add('active');
+  cur=id;
+  if(id==='sq'){score=0;qIdx=0;showQ();}
+}
+
+/* GALLERY */
+(function buildGallery(){
+  const g=document.getElementById('sym-grid');
+  symbols.forEach((s,i)=>{
+    const d=document.createElement('div');d.className='sym-card';
+    d.onclick=()=>openModal(i);
+    d.innerHTML=`<span class="sym-icon">${s.icon}</span><div class="sym-name">${s.name}</div><div class="sym-short">${s.short}</div>`;
+    g.appendChild(d);
+  });
+})();
+
+/* MODAL */
+function openModal(i){
+  const s=symbols[i];
+  document.getElementById('modal-body').innerHTML=`
+    <span class="modal-icon">${s.icon}</span>
+    <div class="modal-name">${s.name}</div>
+    <div class="fact-tag">💡 ${s.fact}</div>
+    <p class="modal-body">${s.body}</p>`;
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(e){
+  if(!e||e.target===document.getElementById('modal'))
+    document.getElementById('modal').classList.remove('open');
+}
+
+/* QUIZ */
+function showQ(){
+  document.getElementById('tb-score').textContent=score;
+  if(qIdx>=questions.length){showFinish();return;}
+  const q=questions[qIdx];
+  document.getElementById('q-prog').textContent=(qIdx+1)+' / '+questions.length;
+  document.getElementById('q-cat').textContent=q.cat;
+  document.getElementById('q-img').textContent=q.img;
+  document.getElementById('q-text').textContent=q.q;
+  document.getElementById('q-fb').textContent='';
+  document.getElementById('q-fb').className='q-fb';
+  document.getElementById('q-explain').style.display='none';
+  document.getElementById('next-btn').style.display='none';
+  const opts=document.getElementById('q-opts');opts.innerHTML='';
+  q.opts.forEach((o,i)=>{
+    const b=document.createElement('button');
+    b.className='opt';b.textContent=o;
+    b.onclick=()=>pick(i,b,q);
+    opts.appendChild(b);
+  });
+}
+function pick(i,btn,q){
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  const fb=document.getElementById('q-fb');
+  const ex=document.getElementById('q-explain');
+  if(i===q.a){
+    btn.classList.add('correct');
+    fb.textContent='✅ Правильно! 🎉';fb.className='q-fb ok';
+    score++;document.getElementById('tb-score').textContent=score;
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.opt')[q.a].classList.add('correct');
+    fb.textContent='❌ Правильно: '+q.opts[q.a];fb.className='q-fb no';
+  }
+  ex.textContent='💡 '+q.exp;ex.style.display='block';
+  document.getElementById('next-btn').style.display='inline-block';
+  qIdx++;
+}
+function nextQ(){showQ();}
+
+function showFinish(){
+  const pct=Math.round(score/questions.length*100);
+  document.getElementById('fin-score').textContent=score;
+  document.getElementById('fin-of').textContent='з '+questions.length;
+  document.getElementById('fin-title').textContent=
+    pct>=88?'🔥 Знавець символіки!':pct>=62?'🥈 Добрий результат!':'📚 Вчи далі!';
+  document.getElementById('fin-sub').textContent=`${score} з ${questions.length} правильних відповідей!`;
+  goTo('sf');
+}
+</script>
+</body>
+</html>
